@@ -42,11 +42,9 @@ class BiometricApp:
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-        # Sekcja wyboru folderów baz
         base_frame = ttk.LabelFrame(main_frame, text="Bazy danych")
         base_frame.pack(fill="x", pady=5)
 
-        # Baza twarzy
         ttk.Button(
             base_frame,
             text="1. Wybierz folder bazy TWARZY",
@@ -55,7 +53,6 @@ class BiometricApp:
         self.lbl_face_train = ttk.Label(base_frame, text="Nie wybrano folderu")
         self.lbl_face_train.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        # Baza odcisków
         ttk.Button(
             base_frame,
             text="2. Wybierz folder bazy ODCISKÓW",
@@ -64,11 +61,9 @@ class BiometricApp:
         self.lbl_fingerprint_train = ttk.Label(base_frame, text="Nie wybrano folderu")
         self.lbl_fingerprint_train.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-        # Sekcja obrazów do identyfikacji
         test_frame = ttk.LabelFrame(main_frame, text="Obrazy do identyfikacji")
         test_frame.pack(fill="x", pady=5)
 
-        # Obraz twarzy
         ttk.Button(
             test_frame,
             text="3. Wybierz obraz TWARZY",
@@ -77,7 +72,6 @@ class BiometricApp:
         self.lbl_face_test = ttk.Label(test_frame, text="Brak pliku")
         self.lbl_face_test.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        # Obraz odcisku
         ttk.Button(
             test_frame,
             text="4. Wybierz obraz ODCISKU",
@@ -86,7 +80,6 @@ class BiometricApp:
         self.lbl_fingerprint_test = ttk.Label(test_frame, text="Brak pliku")
         self.lbl_fingerprint_test.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-        # Przyciski akcji
         action_frame = ttk.Frame(main_frame)
         action_frame.pack(fill="x", pady=10)
 
@@ -106,7 +99,7 @@ class BiometricApp:
         self.log_area = scrolledtext.ScrolledText(main_frame, width=120, height=25)
         self.log_area.pack(fill="both", expand=True, pady=5)
 
-    # ------------- Obsługa wyboru plików/folderów -------------
+    # ------------- Obsługa wyboru plików -------------
 
     def choose_face_train_dir(self):
         path = filedialog.askdirectory()
@@ -363,8 +356,6 @@ class BiometricApp:
                 tk.END,
                 "Werdykt: Tożsamość NIEPEWNA (spora różnica w teksturze).\n"
             )
-
-    # ------------- Wspólne uruchomienie -------------
 
     def run_search(self):
         self.log_area.insert(
