@@ -19,24 +19,21 @@ class BiometricApp:
         self.root.title("System biometryczny: twarz + odcisk")
         self.root.geometry("1000x750")
 
-        # Ścieżki do baz i obrazów testowych
         self.face_train_dir = None
         self.fingerprint_train_dir = None
         self.face_test_img = None
         self.fingerprint_test_img = None
 
-        # Modele / dane dla twarzy (PCA)
         self.pca_model = None
         self.X_pca = None
         self.face_file_names = []
 
-        # Modele / dane dla odcisku (LBP + kNN)
         self.knn = None
         self.fingerprint_label_map = {}
 
         self._build_gui()
 
-    # ---------------- GUI ----------------
+    # GUI
 
     def _build_gui(self):
         main_frame = ttk.Frame(self.root)
@@ -85,21 +82,18 @@ class BiometricApp:
 
         ttk.Button(
             action_frame,
-            text="Analizuj bazy",
+            text="Analizuj bazy (PCA twarzy + LBP k-NN odcisków)",
             command=self.analyze_bases
         ).pack(side="left", padx=5)
 
         ttk.Button(
             action_frame,
-            text="Uruchom algorytm",
+            text="Uruchom algorytm poszukujący",
             command=self.run_search
         ).pack(side="left", padx=5)
 
-        # Log
         self.log_area = scrolledtext.ScrolledText(main_frame, width=120, height=25)
         self.log_area.pack(fill="both", expand=True, pady=5)
-
-    # ------------- Obsługa wyboru plików -------------
 
     def choose_face_train_dir(self):
         path = filedialog.askdirectory()
@@ -129,8 +123,6 @@ class BiometricApp:
             self.fingerprint_test_img = path
             self.lbl_fingerprint_test.config(text=os.path.basename(path))
 
-    # ------------- Analiza baz -------------
-
     def analyze_bases(self):
         self.log_area.delete(1.0, tk.END)
         ok_face = self.run_pca_on_folder()
@@ -149,7 +141,7 @@ class BiometricApp:
                 "Udało się przeanalizować tylko jedną z baz. Sprawdź logi."
             )
 
-    # ------------- PCA dla twarzy -------------
+    # PCA dla twarzy
 
     def load_faces_from_folder(self, folder):
         X = []
@@ -183,7 +175,6 @@ class BiometricApp:
             random_state=42
         )
         self.X_pca = self.pca_model.fit_transform(X)
-
         return True
 
     def recognize_face(self):
@@ -216,7 +207,7 @@ class BiometricApp:
         distances = np.linalg.norm(self.X_pca - img_pca, axis=1)
         min_idx = np.argmin(distances)
         min_dist = distances[min_idx]
-        threshold = 0.05  # próg do dopasowania
+        threshold = 1.1 
 
         self.log_area.insert(tk.END, "\n>>> WYNIK KLASYFIKACJI TWARZY <<<\n")
         self.log_area.insert(
@@ -235,7 +226,7 @@ class BiometricApp:
                 "Werdykt: Tożsamość NIEPEWNA (spora różnica w teksturze).\n"
             )
 
-    # ------------- LBP + kNN dla odcisków -------------
+    # LBP + kNN dla odcisków
 
     def compute_lbp_hist(self, img_path):
         img = cv2.imread(img_path, 0)
@@ -368,7 +359,6 @@ class BiometricApp:
             tk.END,
             "====== KONIEC URUCHOMIENIA ALGORYTMU ======\n"
         )
-
 
 if __name__ == "__main__":
     root = tk.Tk()
